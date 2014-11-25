@@ -24,11 +24,11 @@
 
 - name: Cleanup on final steps failure.
   shell: rm -fr {{ deploy_root_dir }}/releases/{{ release_version.stdout }}
-  when: dump_assets|failed or current_symlink|failed
+  when: current_symlink|failed
 
 - name: Check if processing needs to continue.
   fail: Could not finish off final steps!
-  when: dump_assets|failed or current_symlink|failed
+  when: current_symlink|failed
 
 - name: Run cleanup of old releases.
   shell: ls -dr {{ deploy_root_dir }}/releases/* | tail -n +{{ deploy_releases + 1 }} | xargs rm -fr
