@@ -1,0 +1,13 @@
+# Deployment role for standard apps.
+# Brought to you by Blacklight - http://www.blacklight.co.za/.
+# Developer: Zander Janse van Rensburg <zjvren@geevcookie.com>
+# License: MIT
+#
+# Handles the creation of the deployment and shared directories.
+---
+- name: Get release version.
+  shell: date +%s
+  register: release_version
+
+- name: Create the release directory.
+  file: state=directory path={{ deploy_root_dir }}/releases/{{ release_version.stdout }}

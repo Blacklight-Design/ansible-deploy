@@ -1,0 +1,6 @@
+---
+# defaults file for .
+deploy_strategy: git
+deploy_branch: master
+deploy_releases: 5
+deploy_local_root: /

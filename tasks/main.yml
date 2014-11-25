@@ -1,0 +1,34 @@
+# Deployment role for standard apps.
+# Brought to you by Blacklight - http://www.blacklight.co.za/.
+# Developer: Zander Janse van Rensburg <zjvren@geevcookie.com>
+# License: MIT
+---
+- name: Create deployment directory.
+  include: directory.yml
+
+- name: Deploy the code.
+  include: deploy.yml
+
+- name: Cleanup on deployment failure.
+  shell: rm -fr {{ deploy_root_dir }}/releases/{{ release_version.stdout }}
+  when: deployed|failed
+
+- name: Check if processing needs to continue.
+  fail: Code could not be deployed!
+  when: deployed|failed
+
+- name: Create symlink to newest release.
+  file: state=link src={{ deploy_root_dir }}/releases/{{ release_version.stdout }} path={{ deploy_root_dir }}/current
+  register: current_symlink
+  ignore_errors: true
+
+- name: Cleanup on final steps failure.
+  shell: rm -fr {{ deploy_root_dir }}/releases/{{ release_version.stdout }}
+  when: dump_assets|failed or current_symlink|failed
+
+- name: Check if processing needs to continue.
+  fail: Could not finish off final steps!
+  when: dump_assets|failed or current_symlink|failed
+
+- name: Run cleanup of old releases.
+  shell: ls -dr {{ deploy_root_dir }}/releases/* | tail -n +{{ deploy_releases + 1 }} | xargs rm -fr
