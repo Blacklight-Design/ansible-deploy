@@ -10,13 +10,6 @@ directory structure will look something like this:
 project
     releases
         // All releases will be going here
-    shared
-        app
-            storage
-                logs
-                sessions
-        public
-            uploads
     current // This will be a symlink to the latest release
 ```
 
